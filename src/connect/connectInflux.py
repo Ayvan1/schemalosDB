@@ -6,6 +6,6 @@ config = configparser.ConfigParser()
 config.read('src\connect\config.ini')
   
 client_influx = client.InfluxDBClient(
-            url=config['database']['url'],
-            token= config['database']['token'],
-            org=config['database']['org'])
+            url=config['influx']['url'],
+            token= config['influx']['token'],
+            org=config['influx']['org'])
