@@ -17,10 +17,11 @@ def _get_sensor_name(index:int):
             return None
 
 def  read_all_temperature():
-    query = 'from(bucket: "' + config['influx']['bucket'] + '") |> range(start: -20s)'
+    query = 'from(bucket: "' + config['influx']['bucket'] + '") |> range(start: -1d)'
     tables = cli.query_api().query(query, org=config['influx']['org'])
     result = []
-    for  table in tables:
+    
+    for table in tables:
         for record in table.records:
             result.append(Record(
                 host=record.values.get("host"),
