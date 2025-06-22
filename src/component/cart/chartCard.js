@@ -11,7 +11,8 @@ import {
   Title,
 } from "chart.js";
 
-import { getAllTemperature } from "../../service/oracleService";
+import { getAllTemperature } from "../../service/influxService";
+import { getAllTemperature as oracleGetAllTemperature } from "../../service/oracleService";
 ChartJS.register(
   LineElement,
   PointElement,
@@ -26,20 +27,34 @@ const options = {
   responsive: true,
   plugins: {
     legend: { position: "top" },
-    title: {
-      display: true,
-      text: "Températures par capteur",
-    },
   },
   scales: {
-    x: { title: { display: true, text: "Temps" } },
-    y: { title: { display: true, text: "Température (°C)" } },
+    x: { title: { 
+        display: true,
+        text: "Time" },
+        grid: {
+            display: true
+        },
+        ticks: {
+            maxRotation: 45,  
+            minRotation: 90,  
+            autoSkip: true,  
+        },
+        },
+    y: { title: { 
+        display: true, 
+        text: "Temperatur CPU" 
+        },
+        grid: {
+            display: true
+        } },
   },
 };
 
 function getDataset(temperature){
     console.log("Loaded data")
     const labels = Array.from(new Set(temperature.map(d => d.time))).sort();
+    
     const data = temperature.reduce((prev,current) => {
         if(!prev[current.sensor_name])
             prev[current.sensor_name] = {}
@@ -59,7 +74,7 @@ function getDataset(temperature){
     return { labels, datasets };
 }
 
-function ChartCard() {
+function ChartCard({connectionDB}) {
   const [chartData, setChartData] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -68,7 +83,8 @@ function ChartCard() {
 
     const fetchData = async () => {
       try {
-        const data = await getAllTemperature();
+        console.log(connectionDB)
+        const data =  connectionDB? await  oracleGetAllTemperature(): await getAllTemperature();
         if (isActive && data) {
           setChartData(getDataset(data));
           setLoading(false);
@@ -85,7 +101,7 @@ function ChartCard() {
       clearInterval(intervalId);
       isActive = false;
     };
-  }, []);
+  }, [connectionDB]);
 
   if (loading || !chartData) {
     return <p>Chargement des données...</p>;
@@ -93,7 +109,7 @@ function ChartCard() {
 
   return (
     <>
-      <h1>Hi</h1>
+      <h1>Temperatur Sensor</h1>
       <Line data={chartData} options={options} />
     </>
   );

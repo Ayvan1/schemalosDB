@@ -1,22 +1,18 @@
-import React, { useState } from "react";
+import React from "react";
+import { Link } from "react-router-dom";
 
 function Header(){
-    const [isOn,setIsOn] = useState(false);
-    const toggle = () => {
-    setIsOn(prev => !prev);
-    };
+    
     return(
         <header>
             <h1>
                 CPU Monitoring
             </h1>
-            <button onClick={toggle}>
-                {isOn ? 'Influx' : 'Oracle'}
-            </button>
-            <ul>
-                <li>Monitoring</li>
-                <li>Alert</li>
-            </ul>
+            
+            <nav>
+                <Link to="/">Home</Link>
+                <Link to="/ChartCart">Monitoring</Link>
+            </nav>
         </header>
     )
 }
