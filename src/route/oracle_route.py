@@ -6,7 +6,7 @@ router  = APIRouter()
 
 
 
-@router.get("/allTemperatur")
+@router.get("/allTemperature")
 def get_all_temperature():
     return read_all_temperature()
 
