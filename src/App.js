@@ -4,7 +4,8 @@ import ChartCard from './component/cart/chartCard';
 import React, {useEffect, useState } from "react";
 import { BrowserRouter as Router, useRoutes, Link } from 'react-router-dom';
 import Header from './component/header/header';
-import Home from './component/cart/home/home';
+import Home from './component/home/home';
+import { Button } from '@mui/material';
 
 function App() {
   const [isOn,setIsOn] = useState(true);
@@ -23,14 +24,24 @@ function App() {
 
   return (
     <>
+
+       <div className='body'>
         <Header/>
-         <button onClick={toggle}>
+         <Button onClick={toggle} variant="outlined"  sx={{
+    '&:hover': {
+      backgroundColor: '#282c34',
+      color:"#F5DEB3"
+    },
+  }}>
                 {isOn ? 'Influx' : 'Oracle'}
-        </button>
+        </Button>
         
+        
+    </div>
         <AppRoutes/>
-        
+
     </>
+   
    
     );
 }

@@ -10,9 +10,11 @@ import {
   Tooltip,
   Title,
 } from "chart.js";
+import "./chartCart.css"
 
 import { getAllTemperature } from "../../service/influxService";
 import { getAllTemperature as oracleGetAllTemperature } from "../../service/oracleService";
+import { TrophySpin } from "react-loading-indicators";
 ChartJS.register(
   LineElement,
   PointElement,
@@ -63,12 +65,16 @@ function getDataset(temperature){
     },{})
     
     const datasets = Object.entries(data).map(([sensor_name, values], idx) => {
+
+
     return {
+      
       label: sensor_name,
       data: labels.map(label => values[label] ?? null), 
-      borderColor: `hsl(${(idx * 60) % 360}, 70%, 50%)`,
+      borderColor: `hsla(${(idx * 60) % 360}, 70%, 60%, 0.8)`,
+      backgroundColor: `hsla(${(idx * 60) % 360}, 70%, 70%, 0.3)`,
       fill: false,
-      tension: 0.3,
+      tension: 0.1,
         };
     });
     return { labels, datasets };
@@ -104,14 +110,20 @@ function ChartCard({connectionDB}) {
   }, [connectionDB]);
 
   if (loading || !chartData) {
-    return <p>Chargement des données...</p>;
+    return ( <div className="loading" >
+                <TrophySpin color="#315ccc" size="large" text="loading " textColor="#cba2a2" />
+            </div>
+    )
+   
   }
 
   return (
-    <>
-      <h1>Temperatur Sensor</h1>
-      <Line data={chartData} options={options} />
-    </>
+    <div className="cart">
+      <h1 >Temperatur Sensor</h1>
+      <div className="cart_item">
+        <Line data={chartData} options={options} />
+      </div>
+    </div>
   );
 }
 

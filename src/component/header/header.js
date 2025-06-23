@@ -1,17 +1,22 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import './header.css'
 
 function Header(){
     
     return(
         <header>
-            <h1>
-                CPU Monitoring
-            </h1>
-            
+            <img src="zentralprozessor.png" alt=""/>
             <nav>
-                <Link to="/">Home</Link>
-                <Link to="/ChartCart">Monitoring</Link>
+                <div>
+                    <Link to="/" className="link">Home</Link>
+                </div>
+                <div>
+                    <Link to="/ChartCart" className="link">Monitoring</Link> 
+                </div>
+                <div>
+                    <Link to="/Alert" className="link">Alert</Link>
+                </div>
             </nav>
         </header>
     )

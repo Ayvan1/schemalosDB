@@ -1,0 +1,42 @@
+
+header{
+    display: flex ;
+    flex-direction: row;
+    align-items:  center;
+    width: 40%;
+}
+img{
+    height: 40px;
+}
+nav{
+    width: 100%;
+    margin: 0.1em;
+    display: flex;
+    flex-direction: row;
+    justify-content:  space-around;
+}
+nav > div{
+    width: 100px;
+    border-radius: 10px;
+    padding: 6px;
+    text-align:  center;
+
+}
+.link{
+    text-decoration: none;
+    color: black;
+    
+}
+
+nav > div:hover {
+    background: #39364D;
+    width: 100px;
+    border-radius: 10px;
+    padding: 6px;
+    text-align:  center;
+}
+
+nav > div:hover a{
+    color: wheat;
+    
+}
