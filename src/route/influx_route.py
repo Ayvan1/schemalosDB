@@ -9,6 +9,7 @@ router = APIRouter()
 def get_all_temperature():
     return read_all_temperature()
 
+
 @router.get("/temperature_time/{time}")
 def get_temperature_by_time(time:str):
     return read_all_temperature_by_time(time=time)
