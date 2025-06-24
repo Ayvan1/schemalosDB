@@ -9,6 +9,9 @@ function Alert({connectionDB}){
     const handleChange  = (e) =>{
         setInputValue(e.target.value)
     }
+    const send_alert = async (alertItem) =>{
+        
+    }
     useEffect(() =>{
         const fetchData = async () =>{
             try{
