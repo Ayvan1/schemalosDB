@@ -1,7 +1,6 @@
 from  src.connect.connectInflux import client_influx as cli, config 
 from src.model.record import Record
 import influxdb_client as client
-import random
 
 def _get_sensor_name(index:int):
     match(index):
@@ -19,7 +18,7 @@ def _get_sensor_name(index:int):
             return None
 
 def  read_all_temperature():
-    query = 'from(bucket: "' + config['influx']['bucket'] + '") |> range(start: -11d)'
+    query = 'from(bucket: "' + config['influx']['bucket'] + '") |> range(start: -10m)'
     tables = cli.query_api().query(query, org=config['influx']['org'])
     result = []
     
