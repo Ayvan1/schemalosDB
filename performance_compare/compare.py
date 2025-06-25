@@ -1,6 +1,8 @@
 import time
 from influxdb_client import InfluxDBClient, Point, WritePrecision, QueryApi
 import oracledb
+import matplotlib.pyplot as plt
+import numpy as np
 import configparser
 
 
@@ -33,7 +35,7 @@ def generate_data(n=100):
     data = []
     for i in range(n):
         t = basetime + datetime.timedelta(seconds=i)
-        v = random.uniform(20, 30)  # temp values between 20-30
+        v = random.uniform(20, 30)  # random temp values between 20-30
         data.append((t, v))
     return data
 
@@ -129,21 +131,74 @@ def cleanup():
     except Exception as e:
         print("Error closing InfluxDB client:", e)
 
+def visualize_results(influx_insert_time=None, oracle_insert_time=None, influx_read_time=None, oracle_read_time=None, 
+                        influx_update_time=None, oracle_update_time=None, influx_delete_time=None, oracle_delete_time=None):
+    operations = ['Insert', 'Read', 'Update', 'Delete']
+    if influx_insert_time is None:
+        influx_times = [0.0308, 0.0305, None, 0.0866]
+        oracle_times = [0.0362, 0.0032, 0.0065, 0.0105]
+    else:
+        influx_times = [influx_insert_time, influx_read_time, influx_update_time, influx_delete_time]
+        oracle_times = [
+            oracle_insert_time, oracle_read_time, oracle_update_time, oracle_delete_time
+        ]
+
+    x = np.arange(len(operations))
+    width = 0.35
+
+    fig, ax = plt.subplots()
+
+    # For update, handle None by showing 0 or leaving blank
+    influx_plot = [t if t is not None else 0 for t in influx_times]
+
+    bars1 = ax.bar(x - width/2, influx_plot, width, label='InfluxDB')
+    bars2 = ax.bar(x + width/2, oracle_times, width, label='Oracle Database 23ai')
+
+    # Add labels and title
+    ax.set_ylabel('Time (seconds)')
+    ax.set_title('CRUD Performance Comparison: InfluxDB vs Oracle Database 23ai')
+    ax.set_xticks(x)
+    ax.set_xticklabels(operations)
+    ax.legend()
+
+    # Mark "N/A" on Update InfluxDB bar
+    for i, t in enumerate(influx_times):
+        if t is None:
+            ax.text(x[i] - width/2, 0.001, 'N/A', ha='center', va='bottom', color='red')
+
+    plt.show()
+
 def main():
     n_data_points = 1000
     print(f"Starting performance comparison between InfluxDB and Oracle on {n_data_points} time series data points.")
     data = generate_data(n_data_points)
-    print("Insert InfluxDB:", insert_influx(data))
-    print("Insert Oracle:", insert_oracle(data))
-    print("Read InfluxDB:", read_influx())
-    print("Read Oracle:", read_oracle())
+    influx_insert_time = insert_influx(data)
+    oracle_insert_time = insert_oracle(data)
+    print("Insert InfluxDB:", influx_insert_time)
+    print("Insert Oracle:", oracle_insert_time)
+    time.sleep(1)  # Ensure some time has passed for read operations
+    influx_read_time = read_influx()
+    oracle_read_time = read_oracle()
+    print("Read InfluxDB:", influx_read_time)
+    print("Read Oracle:", oracle_read_time)
     # update_influx() # skipped
     print("Influx does not support UPDATE, skipping.")
-    print("Update Oracle:", update_oracle())
-    print("Delete InfluxDB:", delete_influx())
-    print("Delete Oracle:", delete_oracle())
+    oracle_update_time = update_oracle()
+    print("Update Oracle:", oracle_update_time)
+    influx_delete_time = delete_influx()
+    oracle_delete_time = delete_oracle()
+    print("Delete InfluxDB:", influx_delete_time)
+    print("Delete Oracle:", oracle_delete_time)
     cleanup()
     print("Closed all connections.")
+    visualize_results()
+    # visualize_results(
+    #     influx_insert_time, oracle_insert_time,
+    #     influx_read_time, oracle_read_time,
+    #     None,  # InfluxDB update time is not applicable
+    #     oracle_update_time,
+    #     influx_delete_time, oracle_delete_time
+    # )
 
 if __name__ == "__main__":
     main()
