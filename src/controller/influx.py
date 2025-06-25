@@ -1,4 +1,4 @@
-from  src.connect.connectInflux import client_influx as cli, config 
+from  src.connect.connectInflux import client_influx as cli, load_config as config
 from src.model.record import Record
 
 def _get_sensor_name(index:int):
