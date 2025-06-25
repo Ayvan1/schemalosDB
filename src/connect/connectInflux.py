@@ -2,10 +2,14 @@ import influxdb_client as client
 import configparser
 
 
-config = configparser.ConfigParser()
-config.read('src\connect\config.ini')
-  
-client_influx = client.InfluxDBClient(
-            url=config['database']['url'],
-            token= config['database']['token'],
-            org=config['database']['org'])
+def load_config(path='config.ini'):
+    config = configparser.ConfigParser()
+    config.read(path)
+    return config
+
+def client_influx(config):
+    return InfluxDBClient(
+        url=config['influx']['url'],
+        token=config['influx']['token'],
+        org=config['influx']['org']
+    )
