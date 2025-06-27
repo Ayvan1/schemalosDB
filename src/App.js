@@ -16,8 +16,8 @@ function App() {
 
   const AppRoutes = () =>{
     const routes = useRoutes([
-      {path:'/',element:<Home/>},
-      {path: '/ChartCart', element:<ChartCard connectionDB={isOn} />}
+      //{path:'/',element:<Home/>},
+      {path: '/', element:<ChartCard connectionDB={isOn} />}
     ])
     return routes
   }
@@ -33,7 +33,7 @@ function App() {
       color:"#F5DEB3"
     },
   }}>
-                {isOn ? 'Influx' : 'Oracle'}
+                {isOn ? 'Oracle' : 'Influx'}
         </Button>
         
         

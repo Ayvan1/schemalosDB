@@ -24,3 +24,32 @@ export async function getTemperatureBySensor(sensor_name) {
     }
     return await response.json()
 }
+
+
+export async  function getAlert(){
+    const response = await fetch(`${url}/getAlert`)
+    if(!response.ok){
+        return null
+    }
+    return await response.json()
+}
+
+export async function postTemperatureAlert(alertTemperature){
+    await fetch(`${url}/setAlert`,{
+        method: 'POST',
+        headers:{
+            "Content-Type":"application/json"
+        },
+        body: JSON.stringify({
+            time: alertTemperature.time,
+            sensor_name: alertTemperature.sensor,
+            temperature: alertTemperature.temperature
+        })
+    }).then(res => res.json())
+    .then(data => {
+        console.log(`--- response ${data}} ---`)
+    })
+    .catch(error => {
+        console.error(`---- error ${error} ---`)
+    })
+}

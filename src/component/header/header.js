@@ -8,13 +8,13 @@ function Header(){
         <header>
             <img src="zentralprozessor.png" alt=""/>
             <nav>
-                <div>
+                {/* <div>
                     <Link to="/" className="link">Home</Link>
-                </div>
+                </div> */}
                 <div>
-                    <Link to="/ChartCart" className="link">Monitoring</Link> 
+                    <Link to="/" className="link">Monitoring</Link> 
                 </div>
-                <div>
+                 <div>
                     <Link to="/Alert" className="link">Alert</Link>
                 </div>
             </nav>
