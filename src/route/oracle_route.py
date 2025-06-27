@@ -1,6 +1,6 @@
 from  fastapi import APIRouter
-from src.controller.oracle import read_all_temperature,read_all_temperature_by_time,read_temperature_from_a_sensor,read_temperature_from_a_sensor_by_time
-
+from src.controller.oracle import read_all_temperature,read_all_temperature_by_time,read_temperature_from_a_sensor,read_temperature_from_a_sensor_by_time,get_alert,set_alert
+from  src.model.alertData import AlertData
 
 router  = APIRouter()
 
@@ -23,3 +23,11 @@ def  get_temperature_by_sensor_name(sensor_index:int):
 @router.get("/temperatureSensorByTime/{sensor_index}/{time}")
 def get_temperature_by_time_sensor_name(sensor_index:int,time:str):
     return  read_temperature_from_a_sensor_by_time(sensor_index=sensor_index, time=time)
+
+@router.post("/setAlert")
+def post_alert(alertData:AlertData):
+    return set_alert(alertData)
+
+@router.get("/getAlert")
+def get_alert():
+    return  get_alert()

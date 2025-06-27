@@ -1,6 +1,6 @@
 from  fastapi import APIRouter
 from  src.controller.influx import read_all_temperature,read_all_temperature_by_time,read_temperature_from_a_sensor,read_temperature_from_a_sensor_by_time, create_task, get_alert
-
+from src.model.temperatureData import  TemperatureData
 
 
 router = APIRouter()
@@ -23,9 +23,9 @@ def  get_temperature_by_sensor_name(sensor_index:int):
 def get_temperature_by_time_sensor_name(sensor_index:int,time:str):
     return  read_temperature_from_a_sensor_by_time(sensor_index=sensor_index, time=time)
 
-@router.post("/set_alert/{limit_temperature}")
-def  post_alert(limit_temperature):
-    return create_task(limit_temperature=limit_temperature)
+@router.post("/set_alert")
+def  post_alert(limit_temperature:TemperatureData):
+    return create_task(limit_temperature=limit_temperature.temperature)
 
 @router.get("/get_alert")
 def get_alert_temperature():
