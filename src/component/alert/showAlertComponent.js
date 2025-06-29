@@ -3,7 +3,7 @@ import { getAlert as getAlertInflux } from "../../service/influxService";
 import { getAlert as getAlertOracle } from "../../service/oracleService";
 import { getDataset,options } from "../../service/chartOption";
 import { Line } from 'react-chartjs-2';
-import "./chartCart.css"
+import "../cart/chartCart.css"
 import { TrophySpin } from "react-loading-indicators";
 
 function ShowAlertComponent({connectionDB}){
@@ -52,3 +52,5 @@ function ShowAlertComponent({connectionDB}){
         </div>
     )
 }
+
+export default ShowAlertComponent

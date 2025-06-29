@@ -1,0 +1,28 @@
+.alert{
+    display:  flex;
+    flex-direction: column;
+}
+
+.sendAlert div{
+    width: 70%;
+}
+
+.sendAlert{
+    padding:  20px;
+    text-align:  left;
+    display: flex;
+    flex: row;
+    width: 100%;
+    align-items:   center   ;
+
+    /* background-color: red; */
+}
+
+.TempInput{
+    text-align: right;
+    width: 90%;
+}
+
+Button{
+    width: 20%;
+}

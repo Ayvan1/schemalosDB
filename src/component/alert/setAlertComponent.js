@@ -1,8 +1,8 @@
 import React,{useEffect,useState} from "react";
-import { getAlert, postTemperatureAlert } from "../../service/influxService";
+import { postTemperatureAlert } from "../../service/influxService";
 import { postTemperatureAlert as postTemp } from "../../service/oracleService";
-import { Button } from "@mui/material";
-
+import { Button,TextField } from "@mui/material";
+import "./alert.css"
 
 
 
@@ -14,20 +14,47 @@ function SetAlertComponent({connectionDB}){
     }
 
     const sendTemperatureAlert = async () =>{
-        connectionDB? await postTemp(inputValue):postTemperatureAlert(inputValue)
+        connectionDB? await postTemp(inputValue): await postTemperatureAlert(inputValue)
     }
 
     return(
-        <>
-            <div class="base-Input-root">
-                <input class="base-Input-input" type="number" max={100} min={0} defaultValue={40} onChange={handleChange}/>
+        <div className="sendAlert">
+            <div className="TempInput">
+                <TextField
+                    label="Enter a number"
+                    type="number"
+                    variant="outlined"
+                    defaultValue={40}
+                    onChange={handleChange}
+                    InputLabelProps={{
+                        shrink: true,
+                    }}
+                    inputProps={{
+                        min: 0,
+                        max: 100,
+                        step: 1,
+                    }}
+                    />
             </div>
-            <Button onClick={sendTemperatureAlert()} variant="outlined" sx={{
-                    '&:hover': {
-                    backgroundColor: '#282c34',
-                    color:"#F5DEB3"
-                    },
-            }}>Send</Button>
-        </>
+
+            <div>
+                <Button onClick={sendTemperatureAlert} variant="outlined" sx={{
+                        '&:hover': {
+                        backgroundColor: '#282c34',
+                        color:"#F5DEB3"
+                        },
+                    }}>Send</Button>
+            </div>  
+            
+                
+                
+                
+                {/* <input class="base-Input-input" type="number" max={100} min={0} defaultValue={40} onChange={handleChange}/> */}
+            
+            
+        </div>
     )
 }
+
+
+export default SetAlertComponent

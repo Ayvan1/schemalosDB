@@ -41,9 +41,7 @@ export async function postTemperatureAlert(alertTemperature){
             "Content-Type":"application/json"
         },
         body: JSON.stringify({
-            time: alertTemperature.time,
-            sensor_name: alertTemperature.sensor,
-            temperature: alertTemperature.temperature
+            temperature: alertTemperature
         })
     }).then(res => res.json())
     .then(data => {

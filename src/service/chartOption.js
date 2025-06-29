@@ -8,7 +8,6 @@ import {
   Tooltip,
   Title,
 } from "chart.js";
-import "./chartCart.css"
 ChartJS.register(
   LineElement,
   PointElement,

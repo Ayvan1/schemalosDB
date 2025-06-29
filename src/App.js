@@ -4,6 +4,7 @@ import ChartCard from './component/cart/chartCard';
 import React, {useEffect, useState } from "react";
 import { BrowserRouter as Router, useRoutes, Link } from 'react-router-dom';
 import Header from './component/header/header';
+import Alert from './component/alert/alert';
 import Home from './component/home/home';
 import { Button } from '@mui/material';
 
@@ -17,7 +18,8 @@ function App() {
   const AppRoutes = () =>{
     const routes = useRoutes([
       //{path:'/',element:<Home/>},
-      {path: '/', element:<ChartCard connectionDB={isOn} />}
+      {path: '/', element:<ChartCard connectionDB={isOn} />},
+      {path: '/alert', element:<Alert connectionDB={isOn}/>}
     ])
     return routes
   }
