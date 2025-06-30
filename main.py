@@ -21,7 +21,7 @@ app.include_router(rt)
 
 @app.on_event("startup")
 def on_startup():
-    with open("./src/resources/store_temperature.json","r") as f:
+    with open("../store_temperature.json","r") as f:
         data = json.load(f)
     start_background_job(data["temperature"])
 

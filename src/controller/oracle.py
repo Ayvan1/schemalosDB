@@ -5,20 +5,6 @@ from datetime import datetime
 import threading
 import time
 
-def _get_sensor_name(index:int):
-    match(index):
-        case 1:
-            return "coretemp_core_0"
-        case 2:
-            return "coretemp_core_1"
-        case 3:
-            return "coretemp_core_2"
-        case 4: 
-            return "coretemp_core_3"
-        case 5:
-            return "coretemp_package_id_0"
-        case _:
-            return None
 
 def read_all_temperature():
     temp = []
@@ -44,60 +30,12 @@ def read_all_temperature():
                         temperature=row[1]
                     )
                 )
-        print(temp)
         return temp
     except Exception as  e:
         print(e)
         return temp
     
-
-def read_all_temperature_by_time(time:str):
-    temp = []
-    try:
-        with connect.cursor() as cursor:
-            query = """select captured_time ,temperature,host_name,sensor_name 
-                            from cpu_temperature
-                            where captured_time >= TO_TIMESTAMP(':ts', 'YYYY-MM-DD HH24:MI:SS')
-                    """
-            cursor.execute(query,{'ts': time})
-            for row in cursor.fetchall():
-               temp.append(Record(
-                        host=row[2],
-                        sensor_name=row[3],
-                        time= row[0],
-                        temperature=row[1]
-                    )
-                )
-        return temp
-    except Exception as e:
-        print(e)
-        return temp
     
-
-def  read_temperature_from_a_sensor(sensor_index:int):
-    temp = []
-    try:
-        with  connect.cursor() as cursor:
-            query = """ select captured_time ,temperature,host_name,sensor_name 
-                        from cpu_temperature
-                        where sensor_name = ':name'
-                    
-                    """
-            cursor.execute(query,{'name':_get_sensor_name(sensor_index)})
-            for row in cursor.fetchall():
-               temp.append(Record(
-                        host=row[2],
-                        sensor_name=row[3],
-                        time= row[0],
-                        temperature=row[1]
-                    )
-                )
-        return temp
-    except Exception as e:
-        print(e)
-        return temp
-    
-
 def start_background_job(alert_info):
     def job ():
         round = 1
@@ -108,7 +46,7 @@ def start_background_job(alert_info):
                 connect.commit()
                 print(f"--- add Data {round}")
             except Exception as e:
-                print(f"--- 2 Error: {e}")
+                print(f"--- Error: {e}")
             
             time.sleep(5)
             round += 1
@@ -116,10 +54,7 @@ def start_background_job(alert_info):
     thread.start()
 
 def set_alert(alert_info):
-    print(alert_info)
     current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    print(current_time)
-    
     delete_query = """
     BeGIN
         BEGIN
@@ -158,24 +93,6 @@ def set_alert(alert_info):
             commit;
         end;
     """
-    
-    create_job_sql = f"""
-    Begin
-         DBMS_SCHEDULER.CREATE_JOB (
-        job_name        => 'job_oracle',
-        job_type        => 'PLSQL_BLOCK',
-        job_action      => 'BEGIN inserer_donnees; END;',
-        start_date      => TO_TIMESTAMP('{current_time}', 'YYYY-MM-DD HH24:MI:SS'),
-        repeat_interval => 'FREQ=SECONDLY; INTERVAL=40',
-        enabled         => TRUE
-            );
-        EXCEPTION
-            WHEN OTHERS THEN
-                IF SQLCODE = -27477 THEN NULL;
-                ELSE RAISE;
-                END IF;
-        END;
-    """
 
     update_time = f""" MERGE INTO job_params jp
                     USING (SELECT 'job_oracle' AS job_name, TO_TIMESTAMP('{current_time}', 'YYYY-MM-DD HH24:MI:SS') AS start_date FROM dual) src
@@ -190,13 +107,10 @@ def set_alert(alert_info):
         connect.commit()
         cursor.execute(create_proc_sql)
         cursor.execute(update_time)
-        #create_job_sql_ = create_job_sql.format(start_date=current_time)
-        #cursor.execute(create_job_sql)
+        
     connect.commit()
-    print({"status": "Job saved"})
     start_background_job(alert_info.temperature)
-    print({"status_job:": "start"})
-    return {"status": "Job saved"}
+    return {"status": "Job saved","status_job":"start"}
     
 
 def read_alert():
@@ -213,11 +127,10 @@ def read_alert():
                             'nct6776_pch_mch_temp',
                             'nct6776_peci_agent_0',
                             'nct6776_systin'
-                        )
+                        ) and captured_time >= SYSTIMESTAMP - INTERVAL '10' MINUTE
             """
             cursor.execute(query)
             for row  in cursor.fetchall():
-               # print(row)
                 temp.append (AlertData(
                      time= row[0],
                      temperature= row[1],
@@ -227,28 +140,3 @@ def read_alert():
     except Exception as  e:
         print(e)
         return  temp
-
-def read_temperature_from_a_sensor_by_time(sensor_index:int, time:str):
-    
-    temp = []
-    try:
-        with connect.cursor() as cursor:
-            query = """ select captured_time ,temperature,host_name,sensor_name 
-                        from cpu_temperature
-                        where sensor_name = ':name' and captured_time >= TO_TIMESTAMP(':ts', 'YYYY-MM-DD HH24:MI:SS')
-            """
-            cursor.execute(query,{'name':_get_sensor_name(sensor_index),'ts':time})
-            for row in cursor.fetchall():
-                temp.append(Record(
-                        host=row[2],
-                        sensor_name=row[3],
-                        time= row[0],
-                        temperature=row[1]
-                    )
-                )
-        return temp
-    except Exception as e:
-        print(temp)
-        print(e)
-        return temp
-    
