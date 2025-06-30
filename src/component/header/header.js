@@ -6,7 +6,7 @@ function Header(){
     
     return(
         <header>
-            <img src="zentralprozessor.png" alt=""/>
+            <img src="logo.svg" alt=""/>
             <nav>
                 {/* <div>
                     <Link to="/" className="link">Home</Link>

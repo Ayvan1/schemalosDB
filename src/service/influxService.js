@@ -1,4 +1,4 @@
-const url = "http://127.0.0.1:8000"
+const url = "http://10.20.110.65:8081/:8081"
 
 
 export async function getAllTemperature() {
